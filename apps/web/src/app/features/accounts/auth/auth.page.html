@@ -20,7 +20,8 @@
       {{ view() === "login" ? "BIENVENIDO DE VUELTA" : "CREA TU CUENTA" }}
     </p>
     <h2>
-      {{ view() === "login" ? "Ingresa a Catálogo de Aves" : "Empieza tu bitácora" }}
+      {{ view() === "login" ? "Ingresa a Catálogo de Aves" : "Empieza tu
+      bitácora" }}
     </h2>
     @if (view() === "register") {
     <label for="name">Nombre</label
@@ -68,7 +69,8 @@
     <div class="alert alert-danger mt-3" role="alert">{{ authMessage() }}</div>
     }
     <button class="btn btn-forest w-100 mt-4" [disabled]="submitting()">
-      {{ submitting() ? "Procesando…" : view() === "login" ? "Ingresar" : "Crear cuenta" }}
+      {{ submitting() ? "Procesando…" : view() === "login" ? "Ingresar" : "Crear
+      cuenta" }}
     </button>
     <p class="text-center mt-3 mb-0">
       {{ view() === "login" ? "¿Aún no tienes cuenta?" : "¿Ya tienes una

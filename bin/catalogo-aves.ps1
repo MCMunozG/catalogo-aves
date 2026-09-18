@@ -21,9 +21,64 @@ function Get-ServicePort([string]$Name) {
 }
 
 function Invoke-Artisan([string]$Name, [string[]]$Arguments) {
+    Ensure-ServiceDependencies $Name
     Push-Location (Get-ServiceDirectory $Name)
     try { & php artisan @Arguments; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }
     finally { Pop-Location }
+}
+
+function Ensure-ServiceDependencies([string]$Name) {
+    $path = Get-ServiceDirectory $Name
+    if (-not (Test-Path (Join-Path $path 'vendor/autoload.php'))) {
+        Write-Host "Installing Composer dependencies for $Name..."
+        Push-Location $path
+        try {
+            & composer install --no-interaction --prefer-dist
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        }
+        finally { Pop-Location }
+    }
+}
+
+function Ensure-ServiceEnvironment([string]$Name) {
+    $path = Get-ServiceDirectory $Name
+    $environmentFile = Join-Path $path '.env'
+    if (-not (Test-Path $environmentFile)) {
+        Copy-Item (Join-Path $path '.env.example') $environmentFile
+        Write-Host "Created $path/.env from .env.example."
+    }
+
+    if (Select-String -Path $environmentFile -Pattern '^APP_KEY=$' -Quiet) {
+        Push-Location $path
+        try {
+            & php artisan key:generate --force --ansi
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        }
+        finally { Pop-Location }
+    }
+}
+
+function Ensure-JwtKeyMaterial {
+    $accountsPath = Get-ServiceDirectory 'accounts'
+    Ensure-ServiceDependencies 'accounts'
+    Ensure-ServiceEnvironment 'accounts'
+    Push-Location $accountsPath
+    try {
+        $env:CATALOGO_AVES_OPENSSL_BINARY = (Get-Command openssl -ErrorAction SilentlyContinue).Source
+        & php artisan catalogo-aves:jwt-keys --ansi
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    }
+    finally {
+        Remove-Item Env:CATALOGO_AVES_OPENSSL_BINARY -ErrorAction SilentlyContinue
+        Pop-Location
+    }
+
+    $publicKey = Join-Path $accountsPath 'storage/app/keys/jwt-public.pem'
+    foreach ($consumer in 'catalog', 'observation', 'community') {
+        $consumerKeysPath = Join-Path (Get-ServiceDirectory $consumer) 'storage/app/keys'
+        New-Item -ItemType Directory -Force -Path $consumerKeysPath | Out-Null
+        Copy-Item $publicKey (Join-Path $consumerKeysPath 'jwt-public.pem') -Force
+    }
 }
 
 function Invoke-AllArtisan([string[]]$Arguments) {
@@ -31,6 +86,9 @@ function Invoke-AllArtisan([string[]]$Arguments) {
 }
 
 function Prepare-Service([string]$Name) {
+    Ensure-ServiceDependencies $Name
+    Ensure-ServiceEnvironment $Name
+    Ensure-JwtKeyMaterial
     Invoke-Artisan $Name @('migrate', '--force')
     Invoke-Artisan $Name @('db:seed', '--force')
 }
