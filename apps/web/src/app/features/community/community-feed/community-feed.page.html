@@ -3,7 +3,10 @@
     <p class="eyebrow">COMUNIDAD</p>
     <div class="hero-heading">
       <h1>Una conversación que empieza afuera.</h1>
-      <p>Comparte hallazgos, preguntas y aprendizajes sin poner en riesgo el territorio.</p>
+      <p>
+        Comparte hallazgos, preguntas y aprendizajes sin poner en riesgo el
+        territorio.
+      </p>
     </div>
   </div>
 </section>
@@ -14,59 +17,181 @@
     <a routerLink="/avistamientos/nuevo">Registrar encuentro <span>↗</span></a>
     <a routerLink="/especies">Explorar especies <span>↗</span></a>
     <a routerLink="/notificaciones">Notificaciones <span>↗</span></a>
-    <div class="community-rule"><b>Una regla simple</b><p>Comparte historias, no ubicaciones sensibles.</p></div>
+    <div class="community-rule">
+      <b>Una regla simple</b>
+      <p>Comparte historias, no ubicaciones sensibles.</p>
+    </div>
   </aside>
 
   <main class="community-main">
     <section class="composer-card">
-      <div class="avatar">{{ session.user()?.name?.slice(0, 1)?.toUpperCase() || "C" }}</div>
-      <div><p class="composer-kicker">TU BITÁCORA</p><h2>¿Qué aprendiste hoy?</h2><span>Una observación, una pregunta o una historia de campo.</span></div>
-      <button type="button" (click)="openComposer()" class="btn btn-forest">Escribir <span>→</span></button>
+      <div class="avatar">
+        {{ session.user()?.name?.slice(0, 1)?.toUpperCase() || "C" }}
+      </div>
+      <div>
+        <p class="composer-kicker">TU BITÁCORA</p>
+        <h2>¿Qué aprendiste hoy?</h2>
+        <span>Una observación, una pregunta o una historia de campo.</span>
+      </div>
+      <button type="button" (click)="openComposer()" class="btn btn-forest">
+        Escribir <span>→</span>
+      </button>
     </section>
 
     @if (composerOpen()) {
-      <form class="post-editor" (ngSubmit)="publish()">
-        <label for="post-body">Comparte tu nota</label>
-        <textarea id="post-body" name="post-body" [(ngModel)]="postBody" maxlength="4000" placeholder="¿Qué viste, escuchaste o aprendiste en tu salida?"></textarea>
-        <div class="editor-actions"><small>{{ postBody.length }}/4000</small><span><button type="button" class="btn btn-link" (click)="composerOpen.set(false)">Cancelar</button><button class="btn btn-forest" [disabled]="!postBody.trim()">Publicar</button></span></div>
-      </form>
+    <form class="post-editor" (ngSubmit)="publish()">
+      <label for="post-body">Comparte tu nota</label>
+      <textarea
+        id="post-body"
+        name="post-body"
+        [(ngModel)]="postBody"
+        maxlength="4000"
+        placeholder="¿Qué viste, escuchaste o aprendiste en tu salida?"
+      ></textarea>
+      <div class="editor-actions">
+        <small>{{ postBody.length }}/4000</small
+        ><span
+          ><button
+            type="button"
+            class="btn btn-link"
+            (click)="composerOpen.set(false)"
+          >
+            Cancelar</button
+          ><button class="btn btn-forest" [disabled]="!postBody.trim()">
+            Publicar
+          </button></span
+        >
+      </div>
+    </form>
+    } @if (actionError()) {
+    <div class="action-alert" role="alert">{{ actionError() }}</div>
+    } @if (communityError()) {
+    <div class="feed-fallback" role="status">
+      <b>No fue posible actualizar la comunidad.</b> Verifica que Community esté
+      iniciado.
+    </div>
     }
-
-    @if (actionError()) { <div class="action-alert" role="alert">{{ actionError() }}</div> }
-    @if (communityError()) { <div class="feed-fallback" role="status"><b>No fue posible actualizar la comunidad.</b> Verifica que Community esté iniciado.</div> }
 
     <div class="feed">
       @for (post of feed(); track post.id) {
-        <article class="post-card" [id]="post.id">
-          <header><div class="avatar">{{ post.author_id.slice(0, 1).toUpperCase() }}</div><div><b>Miembro de la comunidad</b><p>Bitácora de campo · {{ post.created_at || "recién" }}</p></div></header>
-          <p class="post-body">{{ post.body || "Compartió una referencia de " + post.reference_type + "." }}</p>
-          <footer class="post-actions">
-            <button type="button" (click)="like(post.id)" [class.active]="likedPosts().has(post.id)">♡ {{ likedPosts().has(post.id) ? "Te interesa" : "Me interesa" }} <small>{{ post.reactions_count || 0 }}</small></button>
-            <button type="button" (click)="toggleComment(post.id)">◦ Comentarios <small>{{ post.comments_count || 0 }}</small></button>
-            <button type="button" (click)="share(post.id)">↗ {{ sharedPostId() === post.id ? "Enlace copiado" : "Compartir" }}</button>
-          </footer>
-          @if (commentingPostId() === post.id) {
-            <section class="thread">
-              <div class="comment-list">
-                @for (comment of commentsByPost()[post.id] || []; track comment.id) { <article><div class="avatar">{{ comment.author_id.slice(0, 1).toUpperCase() }}</div><p><b>Miembro de la comunidad</b>{{ comment.body }}</p></article> }
-                @empty { <p class="empty-comments">Sé la primera persona en responder.</p> }
+      <article class="post-card" [id]="post.id">
+        <header>
+          <div class="avatar">
+            {{ post.author_id.slice(0, 1).toUpperCase() }}
+          </div>
+          <div>
+            <b>Miembro de la comunidad</b>
+            <p>Bitácora de campo · {{ post.created_at || "recién" }}</p>
+          </div>
+        </header>
+        <p class="post-body">
+          {{ post.body || "Compartió una referencia de " + post.reference_type +
+          "." }}
+        </p>
+        <footer class="post-actions">
+          <button
+            type="button"
+            (click)="like(post.id)"
+            [class.active]="likedPosts().has(post.id)"
+          >
+            ♡ {{ likedPosts().has(post.id) ? "Te interesa" : "Me interesa" }}
+            <small>{{ post.reactions_count || 0 }}</small>
+          </button>
+          <button type="button" (click)="toggleComment(post.id)">
+            ◦ Comentarios <small>{{ post.comments_count || 0 }}</small>
+          </button>
+          <button type="button" (click)="share(post.id)">
+            ↗ {{ sharedPostId() === post.id ? "Enlace copiado" : "Compartir" }}
+          </button>
+        </footer>
+        @if (commentingPostId() === post.id) {
+        <section class="thread">
+          <div class="comment-list">
+            @for (comment of commentsByPost()[post.id] || []; track comment.id)
+            {
+            <article>
+              <div class="avatar">
+                {{ comment.author_id.slice(0, 1).toUpperCase() }}
               </div>
-              <form class="comment-editor" (ngSubmit)="sendComment(post.id)"><input name="comment" [(ngModel)]="commentBody" maxlength="2000" placeholder="Escribe una respuesta respetuosa" /><button class="btn btn-forest" [disabled]="!commentBody.trim()">Enviar</button></form>
-            </section>
-          }
-        </article>
+              <p><b>Miembro de la comunidad</b>{{ comment.body }}</p>
+            </article>
+            } @empty {
+            <p class="empty-comments">Sé la primera persona en responder.</p>
+            }
+          </div>
+          <form class="comment-editor" (ngSubmit)="sendComment(post.id)">
+            <input
+              name="comment"
+              [(ngModel)]="commentBody"
+              maxlength="2000"
+              placeholder="Escribe una respuesta respetuosa"
+            /><button class="btn btn-forest" [disabled]="!commentBody.trim()">
+              Enviar
+            </button>
+          </form>
+        </section>
+        }
+      </article>
       } @empty {
-        <div class="empty-state"><span>⌁</span><h3>Aún no hay publicaciones.</h3><p>Comparte el primer aprendizaje de campo.</p></div>
+      <div class="empty-state">
+        <span>⌁</span>
+        <h3>Aún no hay publicaciones.</h3>
+        <p>Comparte el primer aprendizaje de campo.</p>
+      </div>
       }
     </div>
 
     @if (pagination().lastPage > 1) {
-      <nav class="feed-pagination" aria-label="Paginación de publicaciones">
-        <div class="pagination-summary"><b>{{ pagination().total }}</b> publicaciones <label>Ver <select [ngModel]="pagination().perPage" (ngModelChange)="changePerPage($event)">@for (option of perPageOptions; track option) { <option [ngValue]="option">{{ option }}</option> }</select> por página</label></div>
-        <div class="pagination-actions"><button type="button" (click)="goToPage(pagination().currentPage - 1)" [disabled]="pagination().currentPage === 1">← Anterior</button>@for (page of pageNumbers(); track page) { <button type="button" (click)="goToPage(page)" [class.current]="page === pagination().currentPage" [attr.aria-current]="page === pagination().currentPage ? 'page' : null">{{ page }}</button> }<button type="button" (click)="goToPage(pagination().currentPage + 1)" [disabled]="pagination().currentPage === pagination().lastPage">Siguiente →</button></div>
-      </nav>
+    <nav class="feed-pagination" aria-label="Paginación de publicaciones">
+      <div class="pagination-summary">
+        <b>{{ pagination().total }}</b> publicaciones
+        <label
+          >Ver
+          <select
+            [ngModel]="pagination().perPage"
+            (ngModelChange)="changePerPage($event)"
+          >
+            @for (option of perPageOptions; track option) {
+            <option [ngValue]="option">{{ option }}</option>
+            }
+          </select>
+          por página</label
+        >
+      </div>
+      <div class="pagination-actions">
+        <button
+          type="button"
+          (click)="goToPage(pagination().currentPage - 1)"
+          [disabled]="pagination().currentPage === 1"
+        >
+          ← Anterior</button
+        >@for (page of pageNumbers(); track page) {
+        <button
+          type="button"
+          (click)="goToPage(page)"
+          [class.current]="page === pagination().currentPage"
+          [attr.aria-current]="page === pagination().currentPage ? 'page' : null"
+        >
+          {{ page }}
+        </button>
+        }<button
+          type="button"
+          (click)="goToPage(pagination().currentPage + 1)"
+          [disabled]="pagination().currentPage === pagination().lastPage"
+        >
+          Siguiente →
+        </button>
+      </div>
+    </nav>
     }
   </main>
 
-  <aside class="community-aside"><p class="side-label">EN ESTA COMUNIDAD</p><div><b>Observa con distancia</b><span>La fauna siempre va primero.</span></div><div><b>Da contexto</b><span>Una buena nota ayuda a aprender.</span></div><div><b>Pregunta con curiosidad</b><span>Nadie aprende solo.</span></div></aside>
+  <aside class="community-aside">
+    <p class="side-label">EN ESTA COMUNIDAD</p>
+    <div>
+      <b>Observa con distancia</b><span>La fauna siempre va primero.</span>
+    </div>
+    <div><b>Da contexto</b><span>Una buena nota ayuda a aprender.</span></div>
+    <div><b>Pregunta con curiosidad</b><span>Nadie aprende solo.</span></div>
+  </aside>
 </section>

@@ -44,9 +44,7 @@ export class NewSightingPageComponent {
   submitSighting(valid: boolean | null): void {
     if (!valid) {
       this.formSuccess.set(false);
-      this.formMessage.set(
-        "Completa los campos obligatorios.",
-      );
+      this.formMessage.set("Completa los campos obligatorios.");
       return;
     }
     const location = this.selectedLocation();
@@ -61,8 +59,7 @@ export class NewSightingPageComponent {
       return;
     }
     this.submitting.set(true);
-    this.observationsApi
-      .createSighting({
+    this.observationsApi.createSighting({
         ...this.draft,
         latitude: location.latitude,
         longitude: location.longitude,
@@ -73,7 +70,11 @@ export class NewSightingPageComponent {
         next: (created) => {
           this.formSuccess.set(true);
           this.formMessage.set(
-            created.status === "DRAFT" ? "Avistamiento guardado como borrador privado." : created.sensitivity === "HIDDEN" ? "Avistamiento guardado con ubicación protegida; no tendrá marcador público." : "Avistamiento guardado y mostrado en el mapa con la privacidad correspondiente.",
+            created.status === "DRAFT"
+              ? "Avistamiento guardado como borrador privado."
+              : created.sensitivity === "HIDDEN"
+                ? "Avistamiento guardado con ubicación protegida; no tendrá marcador público."
+                : "Avistamiento guardado y mostrado en el mapa con la privacidad correspondiente.",
           );
           this.submitting.set(false);
         },

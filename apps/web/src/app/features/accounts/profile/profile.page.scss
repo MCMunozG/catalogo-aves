@@ -1,12 +1,78 @@
-.profile-grid { display: grid; grid-template-columns: minmax(15rem, 19rem) minmax(0, 1fr); gap: 1.5rem; }
-.profile-summary, .profile-editor { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); padding: clamp(1.25rem, 3vw, 2rem); box-shadow: var(--shadow); }
-.profile-summary { text-align: center; }
-.profile-avatar { display: grid; width: 5.3rem; height: 5.3rem; place-items: center; margin: 0 auto 1rem; border-radius: 50%; background: linear-gradient(135deg, #c9e8b8, #96c9b4); color: var(--forest); font-size: 2rem; font-weight: 850; }
-.profile-summary h2 { font-size: 1.55rem; }
-.profile-summary > p { color: var(--muted); }
-.role-badge { display: inline-block; border-radius: 99px; background: #e7f1df; color: var(--forest); padding: 0.35rem 0.7rem; font-size: 0.74rem; font-weight: 750; text-transform: capitalize; }
-.profile-stat { display: flex; align-items: baseline; justify-content: space-between; padding: 0.65rem 0; text-align: left; }
-.profile-stat b { color: var(--forest); font-size: 1.3rem; }.profile-stat span { color: var(--muted); font-size: 0.8rem; }
-.profile-editor label { display: block; margin: 1rem 0 0.35rem; font-size: 0.82rem; font-weight: 750; }
-.profile-loading { margin-top: 2rem; padding: 2rem; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; color: var(--muted); }
-@media (max-width: 991px) { .profile-grid { grid-template-columns: 1fr; } }
+.profile-grid {
+  display: grid;
+  grid-template-columns: minmax(15rem, 19rem) minmax(0, 1fr);
+  gap: 1.5rem;
+}
+.profile-summary,
+.profile-editor {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: clamp(1.25rem, 3vw, 2rem);
+  box-shadow: var(--shadow);
+}
+.profile-summary {
+  text-align: center;
+}
+.profile-avatar {
+  display: grid;
+  width: 5.3rem;
+  height: 5.3rem;
+  place-items: center;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #c9e8b8, #96c9b4);
+  color: var(--forest);
+  font-size: 2rem;
+  font-weight: 850;
+}
+.profile-summary h2 {
+  font-size: 1.55rem;
+}
+.profile-summary > p {
+  color: var(--muted);
+}
+.role-badge {
+  display: inline-block;
+  border-radius: 99px;
+  background: #e7f1df;
+  color: var(--forest);
+  padding: 0.35rem 0.7rem;
+  font-size: 0.74rem;
+  font-weight: 750;
+  text-transform: capitalize;
+}
+.profile-stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0.65rem 0;
+  text-align: left;
+}
+.profile-stat b {
+  color: var(--forest);
+  font-size: 1.3rem;
+}
+.profile-stat span {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+.profile-editor label {
+  display: block;
+  margin: 1rem 0 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+.profile-loading {
+  margin-top: 2rem;
+  padding: 2rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+  color: var(--muted);
+}
+@media (max-width: 991px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+}

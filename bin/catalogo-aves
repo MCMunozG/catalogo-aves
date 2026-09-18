@@ -14,6 +14,17 @@ service_dir() {
 }
 service_path() { echo "apps/services/$(service_dir "$1")"; }
 service_port() { case "$1" in accounts) echo 8001;; catalog) echo 8002;; observation) echo 8003;; community) echo 8004;; *) echo "Unknown service: $1" >&2; exit 2;; esac; }
+ensure_service_dependencies() {
+  requested_service="$1"
+  path="$(service_path "$requested_service")"
+
+  # Composer dependencies are intentionally ignored by Git. Restore the exact
+  # locked dependency set before invoking Artisan in a fresh working copy.
+  if [ ! -f "$path/vendor/autoload.php" ]; then
+    echo "Installing Composer dependencies for $requested_service..."
+    (cd "$path" && composer install --no-interaction --prefer-dist)
+  fi
+}
 ensure_service_environment() {
   requested_service="$1"
   path="$(service_path "$requested_service")"
@@ -46,8 +57,15 @@ ensure_jwt_key_material() {
     cp "$public_key" "$consumer_path/storage/app/keys/jwt-public.pem"
   done
 }
-run_all() { for name in accounts catalog observation community; do (cd "$(service_path "$name")" && php artisan "$@"); done; }
+run_service() {
+  requested_service="$1"
+  shift
+  ensure_service_dependencies "$requested_service"
+  (cd "$(service_path "$requested_service")" && php artisan "$@")
+}
+run_all() { for name in accounts catalog observation community; do run_service "$name" "$@"; done; }
 prepare_service() {
+  ensure_service_dependencies "$1"
   ensure_service_environment "$1"
   ensure_jwt_key_material
   if ! (cd "$(service_path "$1")" && php artisan migrate --force && php artisan db:seed --force); then
@@ -59,9 +77,9 @@ prepare_all() { for name in accounts catalog observation community; do prepare_s
 case "$command" in
   up) if [ "$target" = all ]; then docker compose up -d; else docker compose up -d "$(service_dir "$target")"; fi;;
   down) docker compose down;;
-  migrate|seed|test) if [ "$target" = all ]; then run_all "$command"; else (cd "$(service_path "$target")" && php artisan "$command"); fi;;
+  migrate|seed|test) if [ "$target" = all ]; then run_all "$command"; else run_service "$target" "$command"; fi;;
   prepare) if [ "$target" = all ]; then prepare_all; else prepare_service "$target"; fi;;
-  fresh) if [ "$target" = all ]; then run_all migrate:fresh --seed; else (cd "$(service_path "$target")" && php artisan migrate:fresh --seed); fi;;
+  fresh) if [ "$target" = all ]; then run_all migrate:fresh --seed; else run_service "$target" migrate:fresh --seed; fi;;
   web)
     action="${2:-serve}"
     case "$action" in
