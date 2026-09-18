@@ -1,0 +1,60 @@
+openapi: 3.0.3
+info:
+  title: Cénit Catalog API
+  version: v1
+  description: Editorial species catalog and geographic sensitivity source of truth.
+paths:
+  /api/catalog/v1/health:
+    get: { summary: Service health, responses: { "200": { description: OK } } }
+  /api/catalog/v1/species:
+    get:
+      {
+        summary: List published species,
+        parameters: [{ in: query, name: q, schema: { type: string } }],
+        responses: { "200": { description: Paginated species } },
+      }
+  /api/catalog/v1/species/{species}:
+    get:
+      {
+        summary: Get a published species and sensitivity,
+        parameters: [{ $ref: "#/components/parameters/species" }],
+        responses:
+          {
+            "200": { description: Species },
+            "404": { description: Not published or absent },
+          },
+      }
+  /api/catalog/v1/admin/species:
+    post:
+      {
+        summary: Create a species,
+        security: [{ bearerAuth: [] }],
+        responses:
+          {
+            "201": { description: Created },
+            "403": { description: Curator role required },
+          },
+      }
+  /api/catalog/v1/admin/species/{species}:
+    put:
+      {
+        summary: Update a species,
+        security: [{ bearerAuth: [] }],
+        parameters: [{ $ref: "#/components/parameters/species" }],
+        responses:
+          {
+            "200": { description: Updated },
+            "403": { description: Curator role required },
+          },
+      }
+components:
+  parameters:
+    species:
+      {
+        in: path,
+        name: species,
+        required: true,
+        schema: { type: string, description: Species ULID },
+      }
+  securitySchemes:
+    bearerAuth: { type: http, scheme: bearer, bearerFormat: JWT }

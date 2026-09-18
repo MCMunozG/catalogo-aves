@@ -1,0 +1,65 @@
+openapi: 3.0.3
+info:
+  title: Cénit Accounts API
+  version: v1
+  description: Identity, profile and token lifecycle. Accounts is the only service that signs JWTs.
+paths:
+  /api/accounts/v1/health:
+    get: { summary: Service health, responses: { "200": { description: OK } } }
+  /api/accounts/v1/auth/register:
+    post:
+      {
+        summary: Register a user and issue a token pair,
+        responses:
+          {
+            "201": { description: Created },
+            "422": { description: Invalid registration },
+          },
+      }
+  /api/accounts/v1/auth/login:
+    post:
+      {
+        summary: Obtain an access and refresh token,
+        responses:
+          {
+            "200": { description: OK },
+            "422": { description: Invalid credentials },
+          },
+      }
+  /api/accounts/v1/auth/refresh:
+    post:
+      {
+        summary: Rotate a refresh token and issue a new token pair,
+        responses:
+          {
+            "200": { description: OK },
+            "401": { description: Invalid refresh token },
+          },
+      }
+  /api/accounts/v1/auth/logout:
+    post:
+      {
+        summary: Revoke a refresh token,
+        security: [{ bearerAuth: [] }],
+        responses: { "204": { description: Revoked } },
+      }
+  /api/accounts/v1/me:
+    get:
+      {
+        summary: Current profile,
+        security: [{ bearerAuth: [] }],
+        responses: { "200": { description: OK } },
+      }
+    patch:
+      {
+        summary: Update current profile and preferences,
+        security: [{ bearerAuth: [] }],
+        responses:
+          {
+            "200": { description: Updated },
+            "422": { description: Invalid profile },
+          },
+      }
+components:
+  securitySchemes:
+    bearerAuth: { type: http, scheme: bearer, bearerFormat: JWT }

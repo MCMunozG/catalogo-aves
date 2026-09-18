@@ -1,0 +1,9 @@
+env
+*/.env
+*/vendor
+*/storage/*.key
+pps/web/dist
+node_modules/
+target/
+dist/
+.idea/

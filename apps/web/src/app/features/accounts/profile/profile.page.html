@@ -1,0 +1,104 @@
+<section class="container section-space">
+  <p class="eyebrow text-forest">ESPACIO PERSONAL</p>
+  <div class="section-heading">
+    <div>
+      <h1>Mi perfil</h1>
+      <p class="text-secondary mb-0">
+        Tu identidad y preferencias para observar con calma.
+      </p>
+    </div>
+    <a routerLink="/avistamientos" class="btn btn-forest">Ver mi bitácora</a>
+  </div>
+  @if (!hasSession()) {
+  <div class="empty-state">
+    <span>⌁</span>
+    <h3>Ingresa para ver tu perfil.</h3>
+    <p>Tu perfil reúne tu bitácora, preferencias y actividad.</p>
+    <a routerLink="/ingresar" class="btn btn-forest">Ingresar</a>
+  </div>
+  } @else if (profileLoading()) {
+  <div class="profile-loading">Cargando tu perfil…</div>
+  } @else if (profileError()) {
+  <div class="alert alert-danger mt-4">
+    No pudimos cargar tu perfil. Confirma que Accounts esté iniciado y vuelve a
+    intentar.
+  </div>
+  } @else {
+  <div class="profile-grid mt-4">
+    <aside class="profile-summary">
+      <div class="profile-avatar">
+        {{ profileForm.name.slice(0, 1).toUpperCase() }}
+      </div>
+      <h2>{{ profileForm.name }}</h2>
+      <p>
+        {{ profileForm.general_location || "Ubicación general no indicada" }}
+      </p>
+      <span class="role-badge">{{ profileRole() }}</span>
+      <hr />
+      <div class="profile-stat">
+        <b>{{ mySightings().length }}</b><span>avistamientos recientes</span>
+      </div>
+      <div class="profile-stat">
+        <b>{{ notifications().length }}</b><span>notificaciones</span>
+      </div>
+    </aside>
+    <form
+      class="profile-editor"
+      #profileFormRef="ngForm"
+      (ngSubmit)="saveProfile(profileFormRef.valid)"
+    >
+      <h3>Información pública</h3>
+      <label>Nombre</label
+      ><input
+        class="form-control"
+        required
+        name="profile_name"
+        [(ngModel)]="profileForm.name"
+      /><label>Biografía</label
+      ><textarea
+        class="form-control"
+        rows="4"
+        name="profile_bio"
+        [(ngModel)]="profileForm.bio"
+        placeholder="Cuéntale a la comunidad qué te interesa observar."
+      ></textarea
+      ><label>Ubicación general</label
+      ><input
+        class="form-control"
+        name="profile_location"
+        [(ngModel)]="profileForm.general_location"
+        placeholder="Ej. Bogotá, Colombia"
+      />
+      <h3 class="mt-4">Preferencias</h3>
+      <div class="form-check form-switch">
+        <input
+          id="show-location"
+          class="form-check-input"
+          type="checkbox"
+          name="show_location"
+          [(ngModel)]="profileForm.show_general_location"
+        /><label class="form-check-label" for="show-location"
+          >Mostrar mi ubicación general en mi perfil</label
+        >
+      </div>
+      <div class="form-check form-switch mt-2">
+        <input
+          id="digest"
+          class="form-check-input"
+          type="checkbox"
+          name="digest"
+          [(ngModel)]="profileForm.weekly_digest"
+        /><label class="form-check-label" for="digest"
+          >Recibir resumen semanal de actividad</label
+        >
+      </div>
+      @if (profileMessage()) {
+      <div class="alert alert-success mt-3">{{ profileMessage() }}</div>
+      }
+      <button class="btn btn-forest mt-4" [disabled]="profileSaving()">
+        Guardar cambios
+      </button>
+    </form>
+  </div>
+  }
+</section>

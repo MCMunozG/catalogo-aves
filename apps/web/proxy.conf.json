@@ -1,0 +1,6 @@
+{
+  "/api/accounts": { "target": "http://localhost:8001", "secure": false },
+  "/api/catalog": { "target": "http://localhost:8002", "secure": false },
+  "/api/observations": { "target": "http://localhost:8003", "secure": false },
+  "/api/community": { "target": "http://localhost:8004", "secure": false }
+}

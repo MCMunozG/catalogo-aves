@@ -1,0 +1,96 @@
+openapi: 3.0.3
+info:
+  title: Cénit Community API
+  version: v1
+  description: Social conversation, reports, moderation audit and notifications.
+paths:
+  /api/community/v1/health:
+    get: { summary: Service health, responses: { "200": { description: OK } } }
+  /api/community/v1/feed:
+    get:
+      {
+        summary: List public posts,
+        responses: { "200": { description: Paginated feed } },
+      }
+  /api/community/v1/posts:
+    post:
+      {
+        summary: Create a post referring to an opaque domain id,
+        security: [{ bearerAuth: [] }],
+        responses: { "201": { description: Created } },
+      }
+  /api/community/v1/posts/{post}/comments:
+    post:
+      {
+        summary: Comment on a post,
+        security: [{ bearerAuth: [] }],
+        parameters: [{ $ref: "#/components/parameters/post" }],
+        responses: { "201": { description: Created } },
+      }
+  /api/community/v1/posts/{post}/reaction:
+    put:
+      {
+        summary: Create or replace the actor reaction,
+        security: [{ bearerAuth: [] }],
+        parameters: [{ $ref: "#/components/parameters/post" }],
+        responses: { "204": { description: Saved } },
+      }
+  /api/community/v1/follows/{user}:
+    put:
+      {
+        summary: Follow a user id,
+        security: [{ bearerAuth: [] }],
+        parameters: [{ $ref: "#/components/parameters/user" }],
+        responses: { "204": { description: Saved } },
+      }
+  /api/community/v1/reports:
+    post:
+      {
+        summary: Report content,
+        security: [{ bearerAuth: [] }],
+        responses: { "201": { description: Created } },
+      }
+  /api/community/v1/reports/{report}/moderate:
+    post:
+      {
+        summary: Resolve a report and audit the action,
+        security: [{ bearerAuth: [] }],
+        parameters: [{ $ref: "#/components/parameters/report" }],
+        responses:
+          {
+            "204": { description: Resolved },
+            "403": { description: Moderator role required },
+          },
+      }
+  /api/community/v1/notifications:
+    get:
+      {
+        summary: List current actor notifications,
+        security: [{ bearerAuth: [] }],
+        responses: { "200": { description: Paginated notifications } },
+      }
+components:
+  parameters:
+    post:
+      {
+        in: path,
+        name: post,
+        required: true,
+        schema: { type: string, description: Post ULID },
+      }
+    user:
+      {
+        in: path,
+        name: user,
+        required: true,
+        schema: { type: string, description: User ULID },
+      }
+    report:
+      {
+        in: path,
+        name: report,
+        required: true,
+        schema: { type: string, description: Report ULID },
+      }
+  securitySchemes:
+    bearerAuth: { type: http, scheme: bearer, bearerFormat: JWT }

@@ -1,0 +1,47 @@
+<section class="page-hero compact">
+  <div class="container">
+    <p class="eyebrow">MAPA PÚBLICO</p>
+    <h1>Observaciones que cuidan el territorio.</h1>
+    <p>
+      Este mapa usa solo las coordenadas públicas autorizadas por Observation.
+    </p>
+  </div>
+</section>
+<section class="container section-space pt-4">
+  <div class="map-layout">
+    <aside class="map-sidebar">
+      <p class="eyebrow text-forest">FILTROS</p>
+      <h3>Avistamientos públicos</h3>
+      <label>Especie</label
+      ><select class="form-select mb-3" [(ngModel)]="selectedSpeciesId" (change)="loadSightings()">
+        <option value="">Todas las especies</option>
+        @for (s of species(); track s.id) {
+        <option [value]="s.id">{{ s.common_name }}</option>
+        }</select
+      ><label>Fecha</label
+      ><select class="form-select mb-4" [(ngModel)]="selectedPeriod" (change)="loadSightings()">
+        <option value="30">Últimos 30 días</option>
+        <option value="365">Este año</option>
+        <option value="all">Todo el historial</option>
+      </select>
+      <div class="map-legend">
+        <span><i class="legend-dot exact"></i> Punto autorizado</span
+        ><span><i class="legend-dot approx"></i> Zona aproximada</span
+        ><span><i class="legend-dot hidden"></i> Ubicación reservada</span>
+      </div>
+    </aside>
+    <div class="live-map">
+      <app-open-street-map
+        [sightings]="mapSightings()"
+        [species]="species()"
+        [places]="places()"
+        [focusLocation]="focusLocation()"
+      ></app-open-street-map>
+      @if (mapError()) {
+      <div class="map-warning">
+        Observation no está disponible para cargar puntos.
+      </div>
+      }
+    </div>
+  </div>
+</section>

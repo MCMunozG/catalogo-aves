@@ -1,0 +1,36 @@
+<section class="container section-space">
+  <a routerLink="/especies" class="back-link">← Volver al catálogo</a>
+  <div class="row g-5 mt-1 align-items-center">
+    <div class="col-lg-5">
+      <div class="species-detail-art">
+        <span>⌁</span>
+        <p>Ficha de especie</p>
+      </div>
+    </div>
+    <div class="col-lg-7">
+      <p class="eyebrow text-forest">CATÁLOGO CURADO</p>
+      <h1>{{ selectedSpecies().common_name }}</h1>
+      <em class="fs-5">{{ selectedSpecies().scientific_name }}</em>
+      <p class="lead mt-4">{{ selectedSpecies().description }}</p>
+      <div class="fact-grid">
+        <div>
+          <small>Hábitat</small
+          ><b>{{ selectedSpecies().habitat || "Por documentar" }}</b>
+        </div>
+        <div>
+          <small>Conservación</small
+          ><b
+            >{{ selectedSpecies().conservation_status || "Sin clasificar" }}</b
+          >
+        </div>
+        <div>
+          <small>Ubicación pública</small
+          ><b>{{ selectedSpecies().sensitivity }}</b>
+        </div>
+      </div>
+      <a routerLink="/avistamientos/nuevo" class="btn btn-forest mt-4"
+        >Registrar un encuentro</a
+      >
+    </div>
+  </div>
+</section>

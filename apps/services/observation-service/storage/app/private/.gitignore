@@ -1,0 +1,6 @@
+*
+!.gitignore
+!media/
+!media/.gitignore
+!media/sightings/
+!media/sightings/.gitkeep

@@ -1,0 +1,130 @@
+<section class="container section-space">
+  <div class="form-page">
+    <div class="form-intro">
+      <p class="eyebrow text-forest">NUEVA ENTRADA</p>
+      <h1>Registra lo que viste.</h1>
+      <p>
+        Tu ubicación exacta se guarda de forma privada. La publicación depende
+        de la sensibilidad de la especie.
+      </p>
+      <div class="info-callout">
+        <b>Consejo de campo</b><br />Mantén distancia de nidos, dormideros y
+        zonas de cría.
+      </div>
+    </div>
+    <form
+      class="sighting-form"
+      #sightingForm="ngForm"
+      (ngSubmit)="submitSighting(sightingForm.valid)"
+    >
+      <div class="form-step">
+        <span>1</span>
+        <div>
+          <h3>¿Qué observaste?</h3>
+          <label>Especie <small>(puede quedar sin identificar)</small></label
+          ><select
+            class="form-select"
+            name="species_id"
+            [(ngModel)]="draft.species_id"
+          >
+            <option value="">Aún no la identifico</option>
+            @for (s of species(); track s.id) {
+            <option [value]="s.id">
+              {{ s.common_name }} · {{ s.scientific_name }}
+            </option>
+            }
+          </select>
+          <div class="row g-3 mt-1">
+            <div class="col-sm-7">
+              <label>Fecha y hora</label
+              ><input
+                class="form-control"
+                type="datetime-local"
+                required
+                name="observed_at"
+                [(ngModel)]="draft.observed_at"
+              />
+            </div>
+            <div class="col-sm-5">
+              <label>Individuos</label
+              ><input
+                class="form-control"
+                type="number"
+                min="1"
+                required
+                name="individuals"
+                [(ngModel)]="draft.individuals"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-step">
+        <span>2</span>
+        <div>
+          <h3>¿Dónde fue?</h3>
+          <div class="sighting-picker mt-3">
+            <app-open-street-map
+              mode="picker"
+              [selectedLocation]="selectedLocation()"
+              (locationChange)="selectMapLocation($event)"
+            ></app-open-street-map>
+          </div>
+          <small class="text-muted"
+            >Busca un lugar o pulsa y arrastra el marcador para seleccionar la
+            ubicación privada. Nunca debes escribir coordenadas.</small
+          >
+          <label class="mt-3">Referencia general <small>(opcional)</small></label
+          ><input
+            class="form-control"
+            name="region"
+            [(ngModel)]="draft.region"
+            placeholder="Ej. sendero principal, reserva…"
+          />
+        </div>
+      </div>
+      <div class="form-step">
+        <span>3</span>
+        <div>
+          <h3>Completa tu nota</h3>
+          <label>Comportamiento</label
+          ><input
+            class="form-control"
+            name="behavior"
+            [(ngModel)]="draft.behavior"
+            placeholder="Ej. alimentándose, vocalizando…"
+          /><label class="mt-3">Notas</label
+          ><textarea
+            class="form-control"
+            rows="3"
+            name="notes"
+            [(ngModel)]="draft.notes"
+          ></textarea>
+          <div class="form-check form-switch mt-3">
+            <input
+              id="publish"
+              class="form-check-input"
+              type="checkbox"
+              name="publish"
+              [(ngModel)]="draft.publish"
+            /><label class="form-check-label" for="publish"
+              >Mostrar en el mapa cuando la privacidad lo permita</label
+            >
+          </div>
+        </div>
+      </div>
+      @if (formMessage()) {
+      <div
+        class="alert"
+        [class.alert-success]="formSuccess()"
+        [class.alert-danger]="!formSuccess()"
+      >
+        {{ formMessage() }}
+      </div>
+      }
+      <button class="btn btn-forest btn-lg w-100" [disabled]="submitting()">
+        {{ submitting() ? "Guardando…" : "Guardar avistamiento" }}
+      </button>
+    </form>
+  </div>
+</section>

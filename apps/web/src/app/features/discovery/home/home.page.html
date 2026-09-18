@@ -1,0 +1,34 @@
+<section class="home-hero">
+  <div class="hero-photo" aria-hidden="true"></div>
+  <div class="container hero-content">
+    <p class="hero-kicker">CATÁLOGO DE AVES · COLOMBIA</p>
+    <h1>Sal a mirar.<br /><em>Quédate a escuchar.</em></h1>
+    <p class="hero-copy">Una bitácora para reconocer las aves que comparten tu territorio, registrar con cuidado y volver con una historia que valga la pena contar.</p>
+    <div class="hero-actions"><a class="btn btn-lime" routerLink="/explorar">Empezar a explorar <span>→</span></a><a class="hero-text-link" routerLink="/especies">Abrir el catálogo</a></div>
+    <div class="hero-footnote"><span>01 — 03</span><span>Una práctica lenta para un territorio vivo</span></div>
+  </div>
+</section>
+
+<section class="entry-points container section-space">
+  <div class="section-label"><span>01</span><p>ELIGE TU FORMA DE SALIR</p></div>
+  <div class="entry-grid">
+    @for (item of journey; track item.title) {
+    <a class="entry-card" [class]="item.color" [routerLink]="item.link"><span class="entry-number">{{ item.index }}</span><div><p>{{ item.title }}</p><h2>{{ item.text }}</h2></div><span class="entry-arrow">↗</span></a>
+    }
+  </div>
+</section>
+
+<section class="statement-band"><div class="container"><p>“No se trata de llenar una lista. Se trata de aprender a ver lo que ya estaba ahí.”</p><span>— Una invitación a la observación responsable</span></div></section>
+
+<section class="container field-guide section-space">
+  <div class="guide-image"><img src="/assets/home/hero-condor-cordillera.png" alt="Cóndor sobre la cordillera colombiana" /><span>ALTURA · ANDES</span></div>
+  <div class="guide-copy"><p class="section-overline">02 · OBSERVAR SIN INVADIR</p><h2>Tu registro puede cuidar el lugar.</h2><p>La plataforma entiende que no todas las ubicaciones se comparten igual. Por eso separa tu punto real de lo que el público puede ver.</p><div class="privacy-principles"><div><b>Exacta</b><span>cuando es seguro mostrarla</span></div><div><b>Amplia</b><span>cuando el contexto exige distancia</span></div><div><b>Reservada</b><span>cuando proteger es primero</span></div></div><a routerLink="/mapa" class="underlined-link">Entender cómo funciona el mapa <span>→</span></a></div>
+</section>
+
+<section class="field-notes container section-space">
+  <div class="notes-heading"><p class="section-overline">03 · POSTALES DEL TERRITORIO</p><h2>No hay una sola Colombia para observar.</h2><p>Empieza cerca. Cada paisaje ofrece otra manera de mirar.</p></div>
+  <div class="notes-grid"><article><img src="/assets/home/editorial-01.png" alt="Humedal al amanecer" /><div><span>HUMEDAL</span><h3>La hora en que el agua despierta</h3></div></article><article><img src="/assets/home/editorial-02.png" alt="Bosque de niebla" /><div><span>BOSQUE</span><h3>Entre hojas, sombra y canto</h3></div></article><article><img src="/assets/home/editorial-09.png" alt="Sendero con vista al paisaje" /><div><span>MONTAÑA</span><h3>Caminar también es observar</h3></div></article></div>
+  <a routerLink="/lugares" class="btn btn-outline-ink">Encontrar un lugar <span>→</span></a>
+</section>
+
+<section class="home-closing"><img src="/assets/home/motmot-bosque-niebla.png" alt="Ave en bosque de niebla" /><div class="container"><p class="section-overline">TU PRÓXIMA SALIDA EMPIEZA AQUÍ</p><h2>Haz espacio para el asombro.</h2><a class="btn btn-lime" routerLink="/registro">Crear mi bitácora <span>→</span></a></div></section>

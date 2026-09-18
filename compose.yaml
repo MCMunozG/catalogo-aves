@@ -1,0 +1,108 @@
+name: catalogo-aves
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD:-catalogo_aves_root_dev}"
+      MYSQL_DATABASE: catalogo_aves_accounts
+      MYSQL_USER: catalogo_aves
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD:-catalogo_aves_dev}"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./infra/mysql/init-databases.sql:/docker-entrypoint-initdb.d/01-databases.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  accounts-service:
+    build: ./apps/services/accounts-service
+    environment:
+      APP_ENV: local
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_DATABASE: catalogo_aves_accounts
+      DB_USERNAME: catalogo_aves
+      DB_PASSWORD: "${MYSQL_PASSWORD:-catalogo_aves_dev}"
+    ports:
+      - "8001:8000"
+    volumes:
+      - jwt-keys:/var/www/html/storage/app/keys
+      - accounts-media:/var/www/html/storage/app/private/media
+    depends_on:
+      mysql:
+        condition: service_healthy
+  catalog-service:
+    build: ./apps/services/catalog-service
+    environment:
+      APP_ENV: local
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_DATABASE: catalogo_aves_catalog
+      DB_USERNAME: catalogo_aves
+      DB_PASSWORD: "${MYSQL_PASSWORD:-catalogo_aves_dev}"
+    ports:
+      - "8002:8000"
+    volumes:
+      - jwt-keys:/var/www/html/storage/app/keys:ro
+      - catalog-media:/var/www/html/storage/app/private/media
+    depends_on:
+      mysql:
+        condition: service_healthy
+  observation-service:
+    build: ./apps/services/observation-service
+    environment:
+      APP_ENV: local
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_DATABASE: catalogo_aves_observation
+      DB_USERNAME: catalogo_aves
+      DB_PASSWORD: "${MYSQL_PASSWORD:-catalogo_aves_dev}"
+      CATALOG_URL: "http://catalog-service:8000"
+    ports:
+      - "8003:8000"
+    volumes:
+      - jwt-keys:/var/www/html/storage/app/keys:ro
+      - observation-media:/var/www/html/storage/app/private/media
+    depends_on:
+      mysql:
+        condition: service_healthy
+  community-service:
+    build: ./apps/services/community-service
+    environment:
+      APP_ENV: local
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_DATABASE: catalogo_aves_community
+      DB_USERNAME: catalogo_aves
+      DB_PASSWORD: "${MYSQL_PASSWORD:-catalogo_aves_dev}"
+    ports:
+      - "8004:8000"
+    volumes:
+      - jwt-keys:/var/www/html/storage/app/keys:ro
+      - community-media:/var/www/html/storage/app/private/media
+    depends_on:
+      mysql:
+        condition: service_healthy
+  web:
+    build: ./apps/web
+    ports:
+      - "4200:80"
+    depends_on:
+      - accounts-service
+      - catalog-service
+      - observation-service
+      - community-service
+volumes:
+  mysql-data:
+  jwt-keys:
+  accounts-media:
+  catalog-media:
+  observation-media:
+  community-media:

@@ -1,0 +1,48 @@
+<section class="container section-space">
+  <p class="eyebrow text-forest">HERRAMIENTAS DEL CATÁLOGO</p>
+  <h1>{{ title() }}</h1>
+  <div class="row g-4 mt-2">
+    <div class="col-md-4">
+      <article class="utility-card">
+        <span>⌁</span>
+        <h3>
+          {{ view() === 'collections' ? 'Especies objetivo' : 'Actividad
+          reciente' }}
+        </h3>
+        <p>
+          {{ view() === 'collections' ? 'Guarda las especies que quieres
+          encontrar y acompaña tus salidas con intención.' : 'Consulta el estado
+          del contenido y sus revisiones desde las APIs habilitadas.' }}
+        </p>
+      </article>
+    </div>
+    <div class="col-md-4">
+      <article class="utility-card">
+        <span>◌</span>
+        <h3>
+          {{ view() === 'collections' ? 'Lugares guardados' : 'Acciones
+          cuidadosas' }}
+        </h3>
+        <p>
+          {{ view() === 'collections' ? 'Reúne senderos, humedales y parques
+          para planear tu próxima ruta.' : 'Toda acción sensible queda
+          registrada para proteger a la comunidad y a la fauna.' }}
+        </p>
+      </article>
+    </div>
+    <div class="col-md-4">
+      <article class="utility-card">
+        <span>↗</span>
+        <h3>
+          {{ view() === 'collections' ? 'Rutas favoritas' : 'Roles y permisos'
+          }}
+        </h3>
+        <p>
+          {{ view() === 'collections' ? 'Conserva recorridos a los que quieres
+          volver cuando cambie la temporada.' : 'Las funciones aparecen según
+          los permisos emitidos por Accounts.' }}
+        </p>
+      </article>
+    </div>
+  </div>
+</section>

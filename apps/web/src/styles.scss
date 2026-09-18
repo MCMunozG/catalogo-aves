@@ -1,0 +1,3 @@
+/* Punto de entrada global: sólo dependencias, tokens y reglas transversales. */
+@use "./styles/foundation";
+@import "leaflet/dist/leaflet.css";

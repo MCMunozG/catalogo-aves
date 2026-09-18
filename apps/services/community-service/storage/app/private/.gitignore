@@ -1,0 +1,6 @@
+*
+!.gitignore
+!media/
+!media/.gitignore
+!media/posts/
+!media/posts/.gitkeep

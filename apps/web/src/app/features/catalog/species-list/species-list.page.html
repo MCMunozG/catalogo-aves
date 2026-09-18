@@ -1,0 +1,45 @@
+<section class="page-hero compact">
+  <div class="container">
+    <p class="eyebrow">CATÁLOGO</p>
+    <h1>Especies para aprender a mirar.</h1>
+    <p>
+      Un catálogo curado que también indica cuándo es necesario proteger una
+      ubicación.
+    </p>
+  </div>
+</section>
+<section class="container section-space pt-4">
+  <div class="d-flex gap-2 mb-4">
+    <input
+      class="form-control form-control-lg"
+      [(ngModel)]="searchText"
+      placeholder="Busca por nombre común o científico"
+      (keyup.enter)="loadSpecies(searchText)"
+    /><button class="btn btn-forest px-4" (click)="loadSpecies(searchText)">
+      Buscar
+    </button>
+  </div>
+  @if (catalogError()) {
+  <div class="catalog-fallback" role="status">
+    <b>Estás viendo fichas de muestra.</b> El catálogo se actualizará cuando
+    Catalog esté disponible.
+  </div>
+  }
+  <div class="row g-4">
+    @for (s of species(); track s.id) {
+    <div class="col-md-6 col-xl-4">
+      <a class="species-card" [routerLink]="['/especies', s.id]"
+        ><div class="species-art">
+          <span>⌁</span><small>{{ s.sensitivity }}</small>
+        </div>
+        <div class="p-4">
+          <p class="mini-label">{{ s.habitat || "Catálogo de Aves" }}</p>
+          <h3>{{ s.common_name }}</h3>
+          <em>{{ s.scientific_name }}</em>
+          <p class="mt-3 mb-0 text-secondary">{{ s.description }}</p>
+        </div></a
+      >
+    </div>
+    }
+  </div>
+</section>

@@ -1,0 +1,56 @@
+<section class="page-hero compact">
+  <div class="container">
+    <p class="eyebrow">EXPLORACIÓN</p>
+    <h1>¿Qué quieres encontrar hoy?</h1>
+    <p>
+      Consulta especies, lugares y señales públicas con cuidado por el
+      territorio.
+    </p>
+  </div>
+</section>
+<section class="container section-space pt-4">
+  <div class="filter-panel">
+    <div>
+      <label>Buscar por especie</label
+      ><input
+        class="form-control"
+        [(ngModel)]="searchText"
+        placeholder="Ej. colibrí, tángara…"
+      />
+    </div>
+    <div>
+      <label>Momento</label
+      ><select class="form-select" [(ngModel)]="moment">
+        <option value="week">Esta semana</option>
+        <option value="month">Este mes</option>
+      </select>
+    </div>
+    <div>
+      <label>Hábitat</label
+      ><select class="form-select" [(ngModel)]="habitat">
+        <option value="">Todos los hábitats</option>
+        <option value="Bosque">Bosque</option>
+        <option value="Humedal">Humedal</option>
+      </select>
+    </div>
+    <button
+      class="btn btn-forest align-self-end"
+      (click)="explore()"
+    >
+      Explorar
+    </button>
+  </div>
+  <div class="row g-4 mt-3">
+    @for (item of highlights; track item.title) {
+    <div class="col-md-4">
+      <article class="explore-card">
+        <span class="emoji">{{ item.icon }}</span>
+        <p class="mini-label">{{ item.label }}</p>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.text }}</p>
+        <a [routerLink]="item.link">Ver detalle →</a>
+      </article>
+    </div>
+    }
+  </div>
+</section>

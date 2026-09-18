@@ -1,0 +1,32 @@
+<section class="journal-hero"><div class="container"><p class="eyebrow">MI BITÁCORA</p><div class="journal-heading"><div><h1>Todo lo que encontraste afuera.</h1><p>Tu cuaderno privado para recordar, corregir y decidir qué registros compartir.</p></div><a class="btn btn-lime" routerLink="/avistamientos/nuevo">+ Nuevo avistamiento</a></div></div></section>
+
+<section class="journal-page container section-space">
+  @if (!hasSession()) {
+    <div class="empty-state"><span>⌁</span><h3>Tu bitácora empieza con una cuenta.</h3><p>Ingresa para conservar tus registros privados y compartir los que autorices.</p><a routerLink="/ingresar" class="btn btn-forest">Ingresar</a></div>
+  } @else {
+    <section class="journal-stats" aria-label="Resumen de avistamientos"><div><span>REGISTROS</span><b>{{ stats().total }}</b><small>en tu bitácora</small></div><div><span>BORRADORES</span><b>{{ stats().drafts }}</b><small>solo visibles para ti</small></div><div><span>COMPARTIDOS</span><b>{{ stats().shared }}</b><small>con privacidad aplicada</small></div><div><span>EN EL MAPA</span><b>{{ stats().mapVisible }}</b><small>puntos o zonas autorizadas</small></div></section>
+
+    <section class="journal-toolbar"><div><b>Tu cuaderno de campo</b><span>{{ visibleSightings().length }} de {{ stats().total }} registros</span></div><div class="filter-tabs"><button type="button" [class.active]="filter() === 'ALL'" (click)="filter.set('ALL')">Todos</button><button type="button" [class.active]="filter() === 'DRAFT'" (click)="filter.set('DRAFT')">Borradores</button><button type="button" [class.active]="filter() === 'PUBLIC'" (click)="filter.set('PUBLIC')">Publicados</button></div></section>
+
+    @if (message()) { <div class="journal-alert success" role="status">{{ message() }}</div> }
+    @if (error()) { <div class="journal-alert error" role="alert">{{ error() }}</div> }
+
+    @if (editingId()) {
+      <section class="sighting-editor"><header><div><p class="eyebrow">EDITAR REGISTRO</p><h2>Afina los detalles de tu encuentro.</h2></div><button type="button" class="icon-close" (click)="cancelEdit()" aria-label="Cerrar editor">×</button></header>
+        <form (ngSubmit)="save()"><div class="editor-grid"><label>Especie<select name="species" [(ngModel)]="draft.species_id"><option value="">Aún no la identifico</option>@for (speciesItem of species(); track speciesItem.id) { <option [value]="speciesItem.id">{{ speciesItem.common_name }} · {{ speciesItem.scientific_name }}</option> }</select></label><label>Fecha y hora<input name="date" type="datetime-local" [(ngModel)]="draft.observed_at" required /></label><label>Individuos<input name="individuals" type="number" min="1" [(ngModel)]="draft.individuals" required /></label><label>Referencia privada<input name="region" [(ngModel)]="draft.region" placeholder="Ej. sendero, parque o barrio" /></label><label class="wide">Comportamiento<input name="behavior" [(ngModel)]="draft.behavior" placeholder="Ej. vocalizando, alimentándose" /></label><label class="wide">Notas<textarea name="notes" [(ngModel)]="draft.notes" rows="3" placeholder="Qué hizo el ave, condiciones o preguntas para revisar después"></textarea></label></div>
+          <div class="editor-map"><div><b>Ubicación privada</b><p>Solo tú puedes verla. Selecciona o ajusta el punto directamente en el mapa.</p></div><app-open-street-map mode="picker" [selectedLocation]="selectedLocation()" (locationChange)="selectMapLocation($event)"></app-open-street-map></div>
+          <label class="publish-toggle"><input type="checkbox" name="publish" [(ngModel)]="draft.publish" /> <span><b>Mostrar en el mapa público</b><small>Observation protege la ubicación según la sensibilidad de la especie.</small></span></label>
+          <footer><button type="button" class="btn btn-link" (click)="cancelEdit()">Cancelar</button><button class="btn btn-forest" [disabled]="saving()">{{ saving() ? "Guardando…" : "Guardar cambios" }}</button></footer>
+        </form>
+      </section>
+    }
+
+    <div class="journal-records">
+      @for (sighting of visibleSightings(); track sighting.id) {
+        <article class="journal-card" [class.draft]="sighting.status === 'DRAFT'"><div class="record-date"><span>{{ sighting.observed_at | date:"dd" }}</span><small>{{ sighting.observed_at | date:"MMM · y" }}</small></div><div class="record-main"><div class="record-title"><div><p>{{ sighting.region || "Ubicación privada" }}</p><h2>{{ speciesName(sighting.species_id) }}</h2></div><span class="status-pill">{{ statusLabel(sighting.status, sighting.sensitivity) }}</span></div><div class="record-meta"><span>◷ {{ sighting.observed_at | date:"HH:mm" }}</span><span>◉ {{ sighting.individuals }} {{ sighting.individuals === 1 ? "individuo" : "individuos" }}</span>@if (sighting.behavior) { <span>⌁ {{ sighting.behavior }}</span> }</div>@if (sighting.notes) { <p class="record-notes">{{ sighting.notes }}</p> }</div><div class="record-actions"><button type="button" (click)="edit(sighting)">Editar</button>@if (sighting.status === 'DRAFT') { <button type="button" class="primary-action" (click)="publish(sighting)" [disabled]="saving()">Compartir con privacidad</button> } @else if (isMapVisible(sighting)) { <button type="button" class="primary-action" (click)="viewOnMap(sighting)">Ver en el mapa</button> } @else { <span class="protected-state">Ubicación protegida<br />sin marcador público</span> }<button type="button" class="danger-action" (click)="requestDelete(sighting.id)">Eliminar</button></div>
+          @if (deletingId() === sighting.id) { <div class="delete-confirm"><b>¿Eliminar este avistamiento?</b><span>Esta acción no se puede deshacer.</span><button type="button" (click)="deletingId.set(null)">Conservar</button><button type="button" class="confirm-delete" (click)="delete(sighting.id)" [disabled]="saving()">Sí, eliminar</button></div> }
+        </article>
+      } @empty { <div class="empty-state">@if (loading()) { <span>⌁</span><h3>Cargando tu cuaderno…</h3> } @else { <span>○</span><h3>No hay registros en este filtro.</h3><p>Los avistamientos que guardes aparecerán aquí sin revelar tu ubicación privada.</p><a routerLink="/avistamientos/nuevo" class="btn btn-forest">Registrar avistamiento</a> }</div> }
+    </div>
+  }
+</section>

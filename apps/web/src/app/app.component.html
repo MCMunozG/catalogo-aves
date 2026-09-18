@@ -1,0 +1,9 @@
+<header class="site-header">
+  <nav class="container site-nav">
+    <a class="brand" routerLink="/"><img src="/assets/brand/logotipo.svg" alt="Catálogo de Aves" /></a>
+    <div class="desktop-nav"><a routerLink="/explorar" routerLinkActive="active">Explorar</a><a routerLink="/especies" routerLinkActive="active">Especies</a><a routerLink="/mapa" routerLinkActive="active">Mapa</a><a routerLink="/lugares" routerLinkActive="active">Lugares</a><a routerLink="/comunidad" routerLinkActive="active">Comunidad</a></div>
+    <div class="nav-actions">@if (session.user(); as user) { <a class="profile-link" routerLink="/perfil">{{ user.name }}</a><button class="logout" (click)="logout()">Salir</button> } @else { <a class="login-link" routerLink="/ingresar">Ingresar</a> } <a class="record-link" routerLink="/avistamientos/nuevo">Registrar <span>↗</span></a></div>
+  </nav>
+</header>
+<main><router-outlet /></main>
+<footer class="site-footer"><div class="container footer-grid"><div class="footer-brand"><img src="/assets/brand/isotipo.svg" alt="" /><p>Una herramienta para observar con curiosidad y registrar con cuidado.</p></div><div><p class="footer-label">EXPLORA</p><a routerLink="/especies">Especies</a><a routerLink="/mapa">Mapa público</a><a routerLink="/lugares">Lugares</a></div><div><p class="footer-label">PARTICIPA</p><a routerLink="/registro">Crea tu bitácora</a><a routerLink="/avistamientos/nuevo">Registra un avistamiento</a><a routerLink="/comunidad">Comunidad</a></div><div class="footer-callout"><p>Las aves no necesitan que las encontremos. Necesitan que aprendamos a mirar.</p><span>COLOMBIA · 2026</span></div></div><div class="container footer-bottom"><span>Catálogo de Aves</span><span>Ciencia ciudadana con respeto por la fauna.</span></div></footer>

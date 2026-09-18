@@ -1,0 +1,6 @@
+*
+!.gitignore
+!media/
+!media/.gitignore
+!media/avatars/
+!media/avatars/.gitkeep

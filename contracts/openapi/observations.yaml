@@ -1,0 +1,58 @@
+openapi: 3.0.3
+info:
+  title: Cénit Observations API
+  version: v1
+  description: Sighting ownership and public/private geographic projections.
+paths:
+  /api/observations/v1/health:
+    get: { summary: Service health, responses: { "200": { description: OK } } }
+  /api/observations/v1/map/sightings:
+    get:
+      {
+        summary: Sanitized public map data,
+        parameters: [{ in: query, name: species_id, schema: { type: string } }],
+        responses: { "200": { description: Paginated public sightings } },
+      }
+  /api/observations/v1/sightings:
+    post:
+      {
+        summary: Create a draft or publication,
+        security: [{ bearerAuth: [] }],
+        responses:
+          {
+            "201": { description: Created },
+            "422": { description: Invalid sighting },
+            "503":
+              { description: Catalog sensitivity unavailable for publication },
+          },
+      }
+  /api/observations/v1/sightings/mine:
+    get:
+      {
+        summary: List the current owner’s sightings including private location,
+        security: [{ bearerAuth: [] }],
+        responses: { "200": { description: Paginated private sightings } },
+      }
+  /api/observations/v1/sightings/{s}:
+    get:
+      {
+        summary: Get an owner or moderator projection,
+        security: [{ bearerAuth: [] }],
+        parameters: [{ $ref: "#/components/parameters/sighting" }],
+        responses:
+          {
+            "200": { description: Private sighting },
+            "404": { description: Not visible to actor },
+          },
+      }
+components:
+  parameters:
+    sighting:
+      {
+        in: path,
+        name: s,
+        required: true,
+        schema: { type: string, description: Sighting ULID },
+      }
+  securitySchemes:
+    bearerAuth: { type: http, scheme: bearer, bearerFormat: JWT }

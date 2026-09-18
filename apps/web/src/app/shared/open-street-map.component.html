@@ -1,0 +1,40 @@
+@if (mode === "picker") {
+<div class="map-search">
+  <label for="location-search">Busca un lugar</label>
+  <form (ngSubmit)="search()" class="map-search-form">
+    <input
+      id="location-search"
+      class="form-control"
+      name="location-search"
+      [(ngModel)]="searchQuery"
+      placeholder="Ej. Reserva Natural, municipio o sendero"
+      autocomplete="off"
+    />
+    <button class="btn btn-outline-forest" type="submit" [disabled]="searching">
+      {{ searching ? "Buscando…" : "Buscar" }}
+    </button>
+  </form>
+  @if (searchError) {
+  <p class="map-search-error">{{ searchError }}</p>
+  } @else if (searchResults.length) {
+  <div class="map-search-results" role="list" aria-label="Resultados de búsqueda">
+    @for (result of searchResults; track result.id) {
+    <button type="button" role="listitem" (click)="chooseSearchResult(result)">
+      {{ result.label }}
+    </button>
+    }
+  </div>
+  }
+</div>
+}
+<div #map class="open-street-map" aria-label="Mapa de OpenStreetMap"></div>
+@if (mapTilesUnavailable) {
+<p class="map-tiles-warning">
+  No se pudo completar el mapa. Verifica tu conexión e inténtalo de nuevo.
+</p>
+}
+@if (mode === "picker" && selectedLocation) {
+<p class="map-selection">
+  <b>Ubicación seleccionada:</b> {{ selectedLocation.label }}
+</p>
+}

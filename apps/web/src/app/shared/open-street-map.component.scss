@@ -1,0 +1,18 @@
+:host { display: block; }
+.open-street-map { width: 100%; height: 500px; border-radius: inherit; }
+/* Evita que reglas globales de imágenes reduzcan o recorten las teselas de Leaflet. */
+:host ::ng-deep .leaflet-container img { max-width: none !important; max-height: none !important; }
+:host ::ng-deep .sighting-marker-container { background: transparent; border: 0; }
+:host ::ng-deep .sighting-marker { display: grid; width: 2.25rem; height: 2.25rem; place-items: center; border: 2px solid #fff; border-radius: 50%; background: #dc6e36; box-shadow: 0 3px 10px rgba(32, 53, 42, .35); font-size: 1.05rem; line-height: 1; }
+:host ::ng-deep .map-popup-link { display: inline-block; margin-top: .45rem; color: #0b4a3b; font-weight: 800; text-decoration: none; }
+.map-search { margin-bottom: 0.85rem; }
+.map-search label { display: block; margin-bottom: 0.35rem; font-size: 0.82rem; font-weight: 750; }
+.map-search-form { display: flex; gap: 0.5rem; }
+.map-search-form .btn { flex: 0 0 auto; }
+.map-search-results { display: grid; gap: 0.4rem; max-height: 10rem; margin-top: 0.6rem; overflow-y: auto; }
+.map-search-results button { border: 1px solid var(--line); border-radius: 0.65rem; background: #fff; padding: 0.6rem; text-align: left; font-size: 0.8rem; transition: background-color 160ms ease; }
+.map-search-results button:hover { background: var(--forest-soft); }
+.map-search-error { margin: 0.5rem 0 0; color: #9c3434; font-size: 0.82rem; }
+.map-tiles-warning { margin: 0.7rem 0 0; border-radius: 0.6rem; background: #fff3d7; padding: 0.7rem; color: #765b10; font-size: 0.82rem; }
+.map-selection { margin: 0.7rem 0 0; color: #405349; font-size: 0.84rem; }
+@media (max-width: 575px) { .open-street-map { height: 360px; } .map-search-form { flex-direction: column; } .map-search-form .btn { width: 100%; } }
