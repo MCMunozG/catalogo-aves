@@ -1,6 +1,10 @@
 import "zone.js";
 import { bootstrapApplication } from "@angular/platform-browser";
-import { provideHttpClient, withInterceptors } from "@angular/common/http";
+import {
+  provideHttpClient,
+  withFetch,
+  withInterceptors,
+} from "@angular/common/http";
 import { provideRouter, withComponentInputBinding } from "@angular/router";
 import { AppComponent } from "./app/app.component";
 import { routes } from "./app/app.routes";
@@ -29,7 +33,7 @@ loadRuntimeConfig()
     bootstrapApplication(AppComponent, {
       providers: [
         provideRouter(routes, withComponentInputBinding()),
-        provideHttpClient(withInterceptors([authInterceptor])),
+        provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
         {
           provide: LOCATION_SEARCH_ENDPOINT,
           useValue: runtimeConfig.locationSearchEndpoint,

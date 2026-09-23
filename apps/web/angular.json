@@ -30,7 +30,8 @@
         "serve": {
           "builder": "@angular/build:dev-server",
           "options": {
-            "buildTarget": "catalogo-aves-web:build"
+            "buildTarget": "catalogo-aves-web:build",
+            "allowedHosts": ["lets-send-strips-nominated.trycloudflare.com"]
           }
         }
       }
