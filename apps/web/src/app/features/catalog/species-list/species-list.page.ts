@@ -40,7 +40,13 @@ export class SpeciesListPageComponent {
               .toLowerCase()
               .includes(query.toLowerCase()),
           )
-          .filter((species) => !habitat || (species.habitat ?? "").toLowerCase().includes(habitat.toLowerCase()));
+          .filter(
+            (species) =>
+              !habitat ||
+              (species.habitat ?? "")
+                .toLowerCase()
+                .includes(habitat.toLowerCase()),
+          );
         this.species.set(fallback);
         this.catalogError.set(true);
       },
@@ -49,6 +55,10 @@ export class SpeciesListPageComponent {
 
   /** Aplica el filtro de hábitat al resultado porque Catalog conserva la búsqueda textual como su contrato mínimo. */
   private filterByHabitat(species: Species[], habitat: string): Species[] {
-    return habitat ? species.filter((item) => (item.habitat ?? "").toLowerCase().includes(habitat.toLowerCase())) : species;
+    return habitat
+      ? species.filter((item) =>
+          (item.habitat ?? "").toLowerCase().includes(habitat.toLowerCase()),
+        )
+      : species;
   }
 }

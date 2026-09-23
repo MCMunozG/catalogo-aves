@@ -13,6 +13,7 @@ class Sighting extends Model
     protected $keyType = 'string';
     protected $fillable = ['user_id', 'species_id', 'observed_at', 'individuals', 'behavior', 'notes', 'status', 'sensitivity', 'private_lat', 'private_lng', 'private_region', 'public_lat', 'public_lng', 'public_region'];
     /** @return array<string, string> Garantiza que la hora de observación se trate como un objeto de fecha. */
+
     protected function casts(): array
     {
         return ['observed_at' => 'datetime'];

@@ -13,10 +13,7 @@ import {
 import { FormsModule } from "@angular/forms";
 import * as L from "leaflet";
 import { LocationSearchService } from "../core/location-search.service";
-import {
-  LocationSearchResult,
-  MapLocation,
-} from "./models/location.models";
+import { LocationSearchResult, MapLocation } from "./models/location.models";
 import { Sighting } from "./models/observation.models";
 import { Place } from "./models/planning.models";
 import { Species } from "./models/catalog.models";
@@ -68,10 +65,13 @@ export class OpenStreetMapComponent
       zoom: this.mode === "picker" ? 12 : 7,
       scrollWheelZoom: true,
     });
-    const tiles = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "&copy; OpenStreetMap contributors",
-      maxZoom: 19,
-    });
+    const tiles = L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        attribution: "&copy; OpenStreetMap contributors",
+        maxZoom: 19,
+      },
+    );
     tiles.on("tileerror", () => (this.mapTilesUnavailable = true));
     tiles.addTo(this.map);
 
@@ -138,7 +138,16 @@ export class OpenStreetMapComponent
 
   /** Dibuja o reposiciona el punto privado que nunca se incorpora al mapa público. */
   private placeSelectedMarker(): void {
-    if (!this.map || !this.selectedLocation) return;
+    if (!this.map) return;
+
+    if (!this.selectedLocation) {
+      if (this.selectedMarker) {
+        this.selectedMarker.remove();
+        this.selectedMarker = undefined;
+      }
+
+      return;
+    }
     const position: L.LatLngExpression = [
       this.selectedLocation.latitude,
       this.selectedLocation.longitude,
@@ -163,8 +172,10 @@ export class OpenStreetMapComponent
   private renderPublicMarkers(): void {
     this.publicMarkers.forEach((marker) => marker.remove());
     const sightingMarkers = this.sightings
-      .filter((sighting) =>
-        Number.isFinite(Number(sighting.latitude)) && Number.isFinite(Number(sighting.longitude)),
+      .filter(
+        (sighting) =>
+          Number.isFinite(Number(sighting.latitude)) &&
+          Number.isFinite(Number(sighting.longitude)),
       )
       .map((sighting) => {
         const marker = L.marker(
@@ -174,7 +185,9 @@ export class OpenStreetMapComponent
         const speciesLink = sighting.species_id
           ? `<a class="map-popup-link" href="/especies/${encodeURIComponent(sighting.species_id)}">Ver ficha de la especie →</a>`
           : "";
-        const species = this.species.find((item) => item.id === sighting.species_id);
+        const species = this.species.find(
+          (item) => item.id === sighting.species_id,
+        );
         const speciesName = species
           ? `<em>${this.escapeHtml(species.common_name)}</em><br><small>${this.escapeHtml(species.scientific_name)}</small><br>`
           : "";
@@ -184,26 +197,44 @@ export class OpenStreetMapComponent
         return marker;
       });
     const placeMarkers = this.places.map((place) => {
-      const marker = L.marker([place.latitude, place.longitude]).addTo(this.map!);
-      marker.bindPopup(`<strong>${this.escapeHtml(place.name)}</strong><br>${this.escapeHtml(place.habitat)} · ${this.escapeHtml(place.municipality)}`);
+      const marker = L.marker([place.latitude, place.longitude]).addTo(
+        this.map!,
+      );
+      marker.bindPopup(
+        `<strong>${this.escapeHtml(place.name)}</strong><br>${this.escapeHtml(place.habitat)} · ${this.escapeHtml(place.municipality)}`,
+      );
       return marker;
     });
     this.publicMarkers = [...sightingMarkers, ...placeMarkers];
     // Los avistamientos son interactivos y deben permanecer sobre los pines de lugares cercanos.
     sightingMarkers.forEach((marker) => marker.setZIndexOffset(500));
     if (this.focusLocation) {
-      this.map?.setView([this.focusLocation.latitude, this.focusLocation.longitude], 15);
-      const focusedMarker = [...sightingMarkers, ...placeMarkers].find((marker) => marker.getLatLng().lat === this.focusLocation?.latitude && marker.getLatLng().lng === this.focusLocation?.longitude);
+      this.map?.setView(
+        [this.focusLocation.latitude, this.focusLocation.longitude],
+        15,
+      );
+      const focusedMarker = [...sightingMarkers, ...placeMarkers].find(
+        (marker) =>
+          marker.getLatLng().lat === this.focusLocation?.latitude &&
+          marker.getLatLng().lng === this.focusLocation?.longitude,
+      );
       focusedMarker?.openPopup();
     } else if (this.publicMarkers.length) {
       const bounds = L.featureGroup(this.publicMarkers).getBounds();
-      if (bounds.isValid()) this.map?.fitBounds(bounds.pad(0.18), { maxZoom: 12 });
+      if (bounds.isValid())
+        this.map?.fitBounds(bounds.pad(0.18), { maxZoom: 12 });
     }
   }
 
   /** Crea un marcador distinto para que los avistamientos no se confundan con lugares. */
   private sightingIcon(): L.DivIcon {
-    return L.divIcon({ className: "sighting-marker-container", html: '<span class="sighting-marker" aria-label="Avistamiento">🐦</span>', iconSize: [36, 36], iconAnchor: [18, 18], popupAnchor: [0, -18] });
+    return L.divIcon({
+      className: "sighting-marker-container",
+      html: '<span class="sighting-marker" aria-label="Avistamiento">🐦</span>',
+      iconSize: [36, 36],
+      iconAnchor: [18, 18],
+      popupAnchor: [0, -18],
+    });
   }
 
   /** Evita que datos remotos se interpreten como HTML dentro del contenido emergente de Leaflet. */

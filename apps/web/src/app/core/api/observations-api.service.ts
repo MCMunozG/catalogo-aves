@@ -23,8 +23,17 @@ export class ObservationsApiService {
       "/api/observations/v1/sightings/mine",
     );
   }
-  createSighting(command: CreateSightingCommand): Observable<Sighting> {
-    return this.http.post<Sighting>("/api/observations/v1/sightings", command);
+  /**
+   * Crea un borrador o publicación. keepalive se usa al abandonar el documento
+   * para que el backend fetch pueda intentar completar la solicitud pendiente.
+   */
+  createSighting(
+    command: CreateSightingCommand,
+    options: { keepalive?: boolean } = {},
+  ): Observable<Sighting> {
+    return this.http.post<Sighting>("/api/observations/v1/sightings", command, {
+      keepalive: options.keepalive,
+    });
   }
   /** Edita un registro propio y recalcula su estado y ubicación pública en Observation. */
   updateSighting(id: string, command: CreateSightingCommand): Observable<Sighting> {

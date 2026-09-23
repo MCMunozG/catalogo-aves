@@ -1,11 +1,110 @@
-:host { display: block; }
-.d-flex.gap-2 { max-width: 48rem; }
-.catalog-fallback { margin-bottom: 1.25rem; border: 1px solid #efd48e; border-radius: 0.75rem; background: #fff8e6; padding: 0.85rem 1rem; color: #765b10; font-size: 0.9rem; }
-.species-card { display: block; height: 100%; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; text-decoration: none; transition: transform 180ms ease, box-shadow 180ms ease; }
-.species-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
-.species-art { position: relative; display: grid; min-height: 10.5rem; place-items: center; overflow: hidden; background: linear-gradient(135deg, #c8e7be, #a4d0bd); color: #18533b; }
-.species-art::before { position: absolute; width: 10rem; height: 10rem; border: 1px solid #ffffff9b; border-radius: 50%; content: ""; transform: translate(3rem, -3rem); }
-.species-art span { position: relative; font: 5.5rem/0.4 Georgia, serif; transform: rotate(-15deg); }
-.species-art small { position: absolute; top: 0.9rem; right: 0.9rem; border-radius: 99px; background: #fff; padding: 0.3rem 0.55rem; font-size: 0.65rem; font-weight: 750; }
-.species-art { background: linear-gradient(#062e2490, #062e2433), url("/assets/home/emblematic/barranquero.png") center / cover; }.col-md-6:nth-child(2n) .species-art { background-image: linear-gradient(#062e2490, #062e2433), url("/assets/home/emblematic/colibri.png"); }.col-md-6:nth-child(3n) .species-art { background-image: linear-gradient(#062e2490, #062e2433), url("/assets/home/emblematic/condor.png"); }.col-md-6:nth-child(4n) .species-art { background-image: linear-gradient(#062e2490, #062e2433), url("/assets/home/emblematic/gatillo.png"); }.col-md-6:nth-child(5n) .species-art { background-image: linear-gradient(#062e2490, #062e2433), url("/assets/home/emblematic/guacamaya.png"); }.col-md-6:nth-child(6n) .species-art { background-image: linear-gradient(#062e2490, #062e2433), url("/assets/home/emblematic/tucan.png"); }.species-art span { display: none; }.species-art small { color: var(--forest); }
-@media (max-width: 575px) { .d-flex.gap-2 { flex-direction: column; } .d-flex.gap-2 .btn { width: 100%; } }
+:host {
+  display: block;
+}
+.d-flex.gap-2 {
+  max-width: 48rem;
+}
+.catalog-fallback {
+  margin-bottom: 1.25rem;
+  border: 1px solid #efd48e;
+  border-radius: 0.75rem;
+  background: #fff8e6;
+  padding: 0.85rem 1rem;
+  color: #765b10;
+  font-size: 0.9rem;
+}
+.species-card {
+  display: block;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+  text-decoration: none;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+.species-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow);
+}
+.species-art {
+  position: relative;
+  display: grid;
+  min-height: 10.5rem;
+  place-items: center;
+  overflow: hidden;
+  background: linear-gradient(135deg, #c8e7be, #a4d0bd);
+  color: #18533b;
+}
+.species-art::before {
+  position: absolute;
+  width: 10rem;
+  height: 10rem;
+  border: 1px solid #ffffff9b;
+  border-radius: 50%;
+  content: "";
+  transform: translate(3rem, -3rem);
+}
+.species-art span {
+  position: relative;
+  font:
+    5.5rem/0.4 Georgia,
+    serif;
+  transform: rotate(-15deg);
+}
+.species-art small {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  border-radius: 99px;
+  background: #fff;
+  padding: 0.3rem 0.55rem;
+  font-size: 0.65rem;
+  font-weight: 750;
+}
+.species-art {
+  background:
+    linear-gradient(#062e2490, #062e2433),
+    url("/assets/home/emblematic/barranquero.png") center / cover;
+}
+.col-md-6:nth-child(2n) .species-art {
+  background-image:
+    linear-gradient(#062e2490, #062e2433),
+    url("/assets/home/emblematic/colibri.png");
+}
+.col-md-6:nth-child(3n) .species-art {
+  background-image:
+    linear-gradient(#062e2490, #062e2433),
+    url("/assets/home/emblematic/condor.png");
+}
+.col-md-6:nth-child(4n) .species-art {
+  background-image:
+    linear-gradient(#062e2490, #062e2433),
+    url("/assets/home/emblematic/gatillo.png");
+}
+.col-md-6:nth-child(5n) .species-art {
+  background-image:
+    linear-gradient(#062e2490, #062e2433),
+    url("/assets/home/emblematic/guacamaya.png");
+}
+.col-md-6:nth-child(6n) .species-art {
+  background-image:
+    linear-gradient(#062e2490, #062e2433),
+    url("/assets/home/emblematic/tucan.png");
+}
+.species-art span {
+  display: none;
+}
+.species-art small {
+  color: var(--forest);
+}
+@media (max-width: 575px) {
+  .d-flex.gap-2 {
+    flex-direction: column;
+  }
+  .d-flex.gap-2 .btn {
+    width: 100%;
+  }
+}
